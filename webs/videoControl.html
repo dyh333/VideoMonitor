@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>视频监控</title>
+
+    <!-- Bootstrap -->
+    <link href="../js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- knodo -->
+    <link rel="stylesheet" href="../js/lib/kendo/style/kendo.common-bootstrap.min.css"/>
+    <link rel="stylesheet" href="../js/lib/kendo/style/kendo.bootstrap.min.css"/>
+
+    <link rel="stylesheet" href="../css/common.css"/>
+
+    <!--<script src="../js/lib/jquery.min.js"></script>-->
+    <!--<script src="../js/lib/bootstrap/js/bootstrap.min.js"></script>-->
+
+    <script src="../js/lib/require.js" data-main="../js/main-videoCtrl" defer async="true"></script>
+</head>
+<body>
+
+<div id="horizontal" style="height: 100%; width: 100%;">
+    <div id="left-pane">
+        <div id="vertical">
+            <div class="pane-content demo-section k-header">
+                <div id="treeview"></div>
+            </div>
+
+            <div id="bottom-pane">
+                <div class="pane-content">
+                    <table>
+                        <tr style="text-align:center;">
+                            <td style="width: 50px; font-size:13px;">摄像机</td>
+                            <td><input id="CamNameText" type="text" style="width:100px;"/></td>
+                            <td style="width: 50px; font-size: 13px;">转速</td>
+                            <td><select id="ptzSpeed" onchange="DoSetPtzSpeed()" style="width:50px;">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3" selected>3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr style="text-align:center; line-height:30px;">
+                                        <td id="td_lock" style="width: 30px;"><img alt="锁定云台" title="锁定云台"
+                                                                                   src="../imgs/videoCtrl/PTZ_lock.gif"/>
+                                        </td>
+                                        <td style="width: 30px; font-size:13px;">锁定</td>
+                                        <td id="td_unlock" style="width: 30px;"><img alt="解锁云台" title="解锁云台"
+                                                                                     src="../imgs/videoCtrl/PTZ_unlock.gif"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="text-align:center; line-height:30px; ">
+                                        <td id="td_lightFar" style="width: 30px;"><img alt="增加关圈" title="增加关圈"
+                                                                                       src="../imgs/videoCtrl/PTZ_focus_far.gif"
+                                                                                       style="vertical-align:middle;"/>
+                                        </td>
+                                        <td style="width: 30px; font-size:13px;">光圈</td>
+                                        <td id="td_lightNear" style="width: 30px;"><img alt="缩小光圈" title="缩小关圈"
+                                                                                        src="../imgs/videoCtrl/PTZ_focus_near.gif"
+                                                                                        style="vertical-align:middle;"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="text-align:center; line-height:30px; ">
+                                        <td id="td_focusFar" style="width: 30px;"><img alt="增加聚焦" title="增加聚焦"
+                                                                                       src="../imgs/videoCtrl/PTZ_focus_far.gif"
+                                                                                       style="vertical-align:middle;"/>
+                                        </td>
+                                        <td style="width: 30px; font-size:13px;">聚焦</td>
+                                        <td id="td_focusNear" style="width: 30px;"><img alt="缩小聚焦" title="缩小聚焦"
+                                                                                        src="../imgs/videoCtrl/PTZ_focus_near.gif"
+                                                                                        style="vertical-align:middle;"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="text-align:center; line-height:30px; ">
+                                        <td id="td_zoomFar" style="width: 30px;"><img alt="增加变倍" title="增加变倍"
+                                                                                      src="../imgs/videoCtrl/PTZ_focus_far.gif"
+                                                                                      style="vertical-align:middle;"/>
+                                        </td>
+                                        <td style="width: 30px; font-size:13px;">变倍</td>
+                                        <td id="td_zoomNear" style="width: 30px;"><img alt="缩小变倍" title="缩小变倍"
+                                                                                       src="../imgs/videoCtrl/PTZ_focus_near.gif"
+                                                                                       style="vertical-align:middle;"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="width: 20px;"></td>
+                            <td>
+                                <table>
+                                    <tr style="text-align:center; line-height:40px; ">
+                                        <td id="td_leftUp" style="width: 40px;"><img alt="左上" title="左上"
+                                                                                     src="../imgs/videoCtrl/PTZ_left_up.gif"
+                                                                                     style="vertical-align:middle;"/>
+                                        </td>
+                                        <td id="td_up" style="width: 40px;"><img alt="向上" title="向上"
+                                                                                 src="../imgs/videoCtrl/PTZ_up.gif"
+                                                                                 style="vertical-align:middle;"/></td>
+                                        <td id="td_rightUp" style="width: 40px;"><img alt="右上" title="右上"
+                                                                                      src="../imgs/videoCtrl/PTZ_right_up.gif"
+                                                                                      style="vertical-align:middle;"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="text-align:center; line-height:40px; ">
+                                        <td id="td_left" style="width: 40px;"><img alt="向左" title="向左"
+                                                                                   src="../imgs/videoCtrl/PTZ_left.gif"
+                                                                                   style="vertical-align:middle;"/></td>
+                                        <td id="td_stop" style="width: 40px;"><img alt="停止" title="停止"
+                                                                                   src="../imgs/videoCtrl/PTZ_stop.gif"
+                                                                                   style="vertical-align:middle;"/></td>
+                                        <td id="td_right" style="width: 40px;"><img alt="向右" title="向右"
+                                                                                    src="../imgs/videoCtrl/PTZ_right.gif"
+                                                                                    style="vertical-align:middle;"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="text-align:center; line-height:40px; ">
+                                        <td id="td_leftDown" style="width: 40px;"><img alt="左下" title="左下"
+                                                                                       src="../imgs/videoCtrl/PTZ_left_down.gif"
+                                                                                       style="vertical-align:middle;"/>
+                                        </td>
+                                        <td id="td_down" style="width: 40px;"><img alt="向下" title="向下"
+                                                                                   src="../imgs/videoCtrl/PTZ_down.gif"
+                                                                                   style="vertical-align:middle;"/></td>
+                                        <td id="td_rightDown" style="width: 40px;"><img alt="右下" title="右下"
+                                                                                        src="../imgs/videoCtrl/PTZ_right_down.gif"
+                                                                                        style="vertical-align:middle;"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table>
+                        <tr style="text-align:center; line-height:30px; ">
+                            <td style="width: 55px; font-size: 14px;">预置位</td>
+                            <td>
+                                <select id="sel_preset" style="width: 95px;">
+
+                                </select>
+                            </td>
+                            <td id="td_presetSel" style="width: 25px;"><img alt="调用预置位" title="调用预置位"
+                                                                            src="../imgs/videoCtrl/PTZ_preset_use.gif"/>
+                            </td>
+                            <td id="td_presetAdd" style="width: 25px;"><img id="img_addPreset" alt="添加预置位"
+                                                                               title="添加预置位"
+                                                                               src="../imgs/videoCtrl/PTZ_preset_insert.gif"/>
+                            </td>
+                            <td id="td_presetDel" style="width: 25px;"><img alt="删除预置位" title="删除预置位"
+                                                                               src="../imgs/videoCtrl/PTZ_preset_delete.gif"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="center-pane">
+        <object  classid="clsid:067A4418-EBAC-4394-BFBE-8C533BA6503A" id="h3c_IMOS_ActiveX" events="true"  height="100%" width="100%" style="z-index:200;">
+        </object>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_presetAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="myModalLabel">添加预置位</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="exampleInputName2">预置位编号：</label>
+                        <input type="text" class="form-control" id="exampleInputName2" placeholder="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btn_presetSave" type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    #vertical {
+        height: 100%;
+        margin: 0 auto;
+    }
+
+
+</style>
+</body>
+</html>

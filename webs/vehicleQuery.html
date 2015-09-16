@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>过车查询</title>
+
+    <!-- Bootstrap -->
+    <link href="../js/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../js/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+    <!-- knodo -->
+    <!--<link rel="stylesheet" href="../js/lib/kendo/style/kendo.common-bootstrap.min.css"/>-->
+    <!--<link rel="stylesheet" href="../js/lib/kendo/style/kendo.bootstrap.min.css"/>-->
+
+    <!-- jqGrid -->
+    <link rel="stylesheet" href="../js/lib/jquery-ui-bootstrap/jqGrid/css/ui.jqgrid.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../js/lib/jquery-ui-bootstrap/jqGrid.overrides.css" rel="stylesheet">
+    <link rel="stylesheet" href="../js/lib/jquery-ui-bootstrap/css/custom-theme/jquery-ui-1.10.3.custom.css"
+          rel="stylesheet">
+
+    <!--<script src="../js/lib/require.js" data-main="../js/main" defer async="true"></script>-->
+
+    <script src="../js/lib/jquery.min.js"></script>
+
+    <script src="../js/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../js/lib/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!-- knodo -->
+    <!--<script src="../js/lib/kendo/js/kendo.all.min.js"></script>-->
+
+    <!-- jqGrid -->
+    <script src="../js/lib/jquery-ui-bootstrap/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="../js/lib/jquery-ui-bootstrap/jqGrid/js/i18n/grid.locale-cn.js"></script>
+    <script src="../js/lib/jquery-ui-bootstrap/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+    <style>
+        #div_query .form-inline {
+            padding-top: 5px;
+        }
+
+        .ui-jqgrid .ui-jqgrid-htable th div {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="div_query">
+    <div class="form-inline">
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">拍摄地点</label>
+            <input style="width: 200px;" type="text" class="form-control" id="tollgateCode" placeholder="">
+        </div>
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">行驶方向</label>
+            <select style="width: 200px;" class="form-control" id="sel_direct">
+                <option value="0">全部</option>
+                <option value="1">东向西</option>
+                <option value="2">西向东</option>
+                <option value="3">南向北</option>
+                <option value="4">北向南</option>
+                <option value="5">东南向西北</option>
+                <option value="6">西北向东南</option>
+                <option value="7">东北向西南</option>
+                <option value="8">西南向西北</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label style="width: 70px;">车牌号码</label>
+            <input style="width: 200px;" type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+        </div>
+    </div>
+    <div class="form-inline">
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">车牌颜色</label>
+            <select style="width: 200px;" class="form-control" id="sel_plateColor">
+                <option value="">全部</option>
+                <option value="A">白</option>
+                <option value="B">灰</option>
+                <option value="C">黄</option>
+                <option value="D">粉</option>
+                <option value="E">红</option>
+                <option value="F">紫</option>
+                <option value="G">绿</option>
+                <option value="H">蓝</option>
+                <option value="I">棕</option>
+                <option value="J">黑</option>
+                <option value="K">橙</option>
+                <option value="L">青</option>
+                <option value="M">银</option>
+                <option value="N">银白</option>
+                <option value="Z">其他</option>
+            </select>
+        </div>
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">车辆类型</label>
+            <select style="width: 200px;" class="form-control" id="sel_vehType">
+                <option value="">全部</option>
+                <option value="0">未知</option>
+                <option value="1">小型车</option>
+                <option value="2">中型车</option>
+                <option value="3">大型车</option>
+                <option value="4">其他</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label style="width: 70px;">车身颜色</label>
+            <select style="width: 200px;" class="form-control" id="sel_vehColor">
+                <option value="">全部</option>
+                <option value="A">白</option>
+                <option value="B">灰</option>
+                <option value="C">黄</option>
+                <option value="D">粉</option>
+                <option value="E">红</option>
+                <option value="F">紫</option>
+                <option value="G">绿</option>
+                <option value="H">蓝</option>
+                <option value="I">棕</option>
+                <option value="J">黑</option>
+                <option value="K">橙</option>
+                <option value="L">青</option>
+                <option value="M">银</option>
+                <option value="N">银白</option>
+                <option value="Z">其他</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-inline">
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">号牌类型</label>
+            <select style="width: 200px;" class="form-control" id="sel_plateType">
+                <option value="">全部</option>
+                <option value="01">大型汽车</option>
+                <option value="02">小型汽车</option>
+                <option value="03">使馆汽车</option>
+                <option value="04">领馆汽车</option>
+                <option value="05">境外汽车</option>
+                <option value="06">外籍汽车</option>
+                <option value="07">两、三轮摩托车</option>
+                <option value="08">轻便摩托车</option>
+                <option value="09">使馆摩托车</option>
+                <option value="10">领馆摩托车</option>
+                <option value="11">境外摩托车</option>
+                <option value="12">外籍摩托车</option>
+                <option value="13">农用运输车</option>
+                <option value="14">拖拉机</option>
+                <option value="15">挂车</option>
+                <option value="16">教练汽车</option>
+                <option value="17">教练摩托车</option>
+                <option value="18">试验汽车</option>
+                <option value="19">试验摩托车</option>
+                <option value="20">临时入境汽车</option>
+                <option value="21">临时入境摩托车</option>
+                <option value="22">临时行驶车</option>
+                <option value="23">警用汽车</option>
+                <option value="24">警用摩托车</option>
+                <option value="99">其他</option>
+            </select>
+        </div>
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">车道号</label>
+            <input style="width: 200px;" type="text" class="form-control" id="txt_laneNo" placeholder="Jane Doe">
+        </div>
+        <div class="form-group">
+            <label style="width: 70px;">行驶状态</label>
+            <select style="width: 200px;" class="form-control" id="sel_handle">
+
+            </select>
+        </div>
+    </div>
+    <div class="form-inline">
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">开始时间</label>
+
+            <div style="width: 200px;" class="input-group date form_datetime" data-date="2015-09-16T05:25:07Z"
+                 data-date-format="yyyy-mm-dd hh:ii">
+                <input class="form-control" size="16" type="text" value="">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+        </div>
+        <div style="margin-right: 30px;" class="form-group">
+            <label style="width: 70px;">结束时间</label>
+
+            <div style="width: 200px;" class="input-group date form_datetime" data-date="2015-09-16T05:25:07Z"
+                 data-date-format="yyyy-mm-dd hh:ii">
+                <input class="form-control" size="16" type="text" value="">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <button id="btn_query" type="button" class="btn btn-default">查询</button>
+            <button id="btn_reset" type="button" class="btn btn-default">重置</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+
+
+<script type="text/javascript">
+    var tollgateCode = null;  //卡口编号
+    var direction = null;      //行驶方向
+    var plateCode = null;       //车牌号码
+    var laneNo = null;          //车道号
+    var plateColor = null;     //车牌颜色
+    var plateType = null;      //车牌类型
+    var vehColor = null;        //车辆颜色
+    var vehType = null;         //车辆类型
+    var starttime = null;      //开始时间
+    var endtime = null;        //结束时间
+
+    $('.form_datetime').datetimepicker({
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+
+    $("#btn_query").click(function () {
+        tollgate_code = $("#tollgateCode").val();
+        direction = $("#direction").val();
+        plateCode = $("#plateCode").val();
+        laneNo = $("#laneNo").val();
+        plateColor = $("#plateColor").val();
+        plateType = $("#plateType").val();
+        vehColor = $("#vehColor").val();
+        vehType = $("#vehType").val();
+        starttime = $("#starttime").val();
+        endtime = $("#endtime").val();
+
+        $("#jqGrid").jqGrid('setGridParam', {
+            datatype: 'json',
+            postData: {
+                tollgateCode: tollgateCode,
+                direction: direction,
+                plateCode: plateCode,
+                laneNo: laneNo,
+                plateColor: plateColor,
+                plateType: plateType,
+                vehColor: vehColor,
+                vehType: vehType,
+                starttime: starttime,
+                endtime: endtime
+            }, //发送数据
+            page: 1
+        }).trigger("reloadGrid"); //重新载入
+    });
+
+    $(document).ready(function () {
+
+        $('.form_datetime').datetimepicker({
+            language: 'zh-CN',
+//            weekStart : 1,
+//            todayBtn : 1,
+//            autoclose : 1,
+//            todayHighlight : 1,
+//            startView : 2,
+//            forceParse : 0,
+//            showMeridian : 1,
+            pickerPosition: 'bottom-left'
+        });
+
+        $("#jqGrid").jqGrid({
+            url: "http://10.100.8.107:8081/ItsWeb/videoCtrl/getVehiclePassList.do",
+            postData: {
+                tollgateCode: tollgateCode,
+                direction: direction,
+                plateCode: plateCode,
+                laneNo: laneNo,
+                plateColor: plateColor,
+                plateType: plateType,
+                vehColor: vehColor,
+                vehType: vehType,
+                starttime: starttime,
+                endtime: endtime
+            },
+            datatype: "json",
+            mtype: 'POST',
+            colNames: ['车牌缩略图', '车牌号码', '车牌颜色', '车辆颜色', '车辆类型', '过车速度', '行驶方向', '通过时间', '车道编号', '卡口名称'],
+            colModel: [
+                {name: 'platePicUrl', index: 'platePicUrl', sortable: false, width: 200},
+                {name: 'plateCode', index: 'plateCode', width: 50},
+                {name: 'plateColor', index: 'plateColor', width: 50},
+                {name: 'vehColor', index: 'vehColor', width: 50},
+                {name: 'vehType', index: 'vehType', width: 50},
+                {name: 'speed', index: 'speed', width: 50, sorttype: "int"},
+                {name: 'direction', index: 'direction', width: 50},
+                {name: 'passTime', index: 'passTime', width: 120, sorttype: "date"},
+                {name: 'laneNo', index: 'laneNo', width: 50, sorttype: "int"},
+                {name: 'tollgateName', index: 'tollgateName', width: 120},
+            ],
+            height: 400,
+            rowNum: 10,
+//            rowList: [10,20,30],
+            pager: "#jqGridPager",
+            viewrecords: true,
+//            caption: "Sample jqGrid Table",
+            hidegrid: false,
+            altRows: true,
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                order: "sord", // 表示采用的排序方式的参数名称
+                nd: "nd", // 表示已经发送请求的次数的参数名称
+                totalrows: "totalrows" // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            },
+            jsonReader: {// 读取后端json数据的格式
+                root: "rows", // 保存详细记录的名称
+                total: "total", // 总共有页
+                page: "page", // 当前是哪一页
+                records: "records", // 总共记录数
+                repeatitems: false
+            },
+            gridComplete: function () {
+                var totalWidth = $(window).width();
+                $("#jqGrid").setGridWidth(totalWidth - 3);
+            },
+            loadComplete: function () { //如果数据不存在，提示信息
+                var rowNum = $("#jqGrid").jqGrid('getGridParam', 'records');  //获取当前jqGrid的总记录数
+                if (rowNum == 0 && ($("#norecords").html() == null)) {  //如果无记录，则显示提示信息
+                    $("#jqGrid").parent().append("</pre><div id='norecords'>没有查询记录！</div><pre>");
+                    $("#norecords").show();
+                }
+                else {   //如果存在记录，则隐藏提示信息。
+                    $("#norecords").hide();
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
