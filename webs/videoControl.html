@@ -25,6 +25,17 @@
 <div id="horizontal" style="height: 100%; width: 100%;">
     <div id="left-pane">
         <div id="vertical">
+            <div id="top-pane">
+                <div class="pane-content">
+                    <ol class="breadcrumb" style="margin-bottom: 0px; font-size: 8pt; border-radius: 0px !important;">
+                        <li><a href="vehicleQuery.html" target='view_window'>过车查询</a></li>
+                        <li><a href="illegalVehicleQuery.html" target='view_window'>违法过车</a></li>
+                        <li><a href="#" target='view_window'>车辆布控</a></li>
+                        <li><a href="#" target='view_window'>布控告警</a></li>
+                    </ol>
+                </div>
+            </div>
+
             <div class="pane-content demo-section k-header">
                 <div id="treeview"></div>
             </div>
@@ -34,7 +45,7 @@
                     <table>
                         <tr style="text-align:center;">
                             <td style="width: 50px; font-size:13px;">摄像机</td>
-                            <td><input id="CamNameText" type="text" style="width:100px;"/></td>
+                            <td><input id="txt_camName" type="text" style="width:100px;" readonly/></td>
                             <td style="width: 50px; font-size: 13px;">转速</td>
                             <td><select id="ptzSpeed" onchange="DoSetPtzSpeed()" style="width:50px;">
                                 <option value="1">1</option>
@@ -154,11 +165,11 @@
                                                                             src="../imgs/videoCtrl/PTZ_preset_use.gif"/>
                             </td>
                             <td id="td_presetAdd" style="width: 25px;"><img id="img_addPreset" alt="添加预置位"
-                                                                               title="添加预置位"
-                                                                               src="../imgs/videoCtrl/PTZ_preset_insert.gif"/>
+                                                                            title="添加预置位"
+                                                                            src="../imgs/videoCtrl/PTZ_preset_insert.gif"/>
                             </td>
                             <td id="td_presetDel" style="width: 25px;"><img alt="删除预置位" title="删除预置位"
-                                                                               src="../imgs/videoCtrl/PTZ_preset_delete.gif"/>
+                                                                            src="../imgs/videoCtrl/PTZ_preset_delete.gif"/>
                             </td>
                         </tr>
                     </table>
@@ -167,7 +178,8 @@
         </div>
     </div>
     <div id="center-pane">
-        <object  classid="clsid:067A4418-EBAC-4394-BFBE-8C533BA6503A" id="h3c_IMOS_ActiveX" events="true"  height="100%" width="100%" style="z-index:200;">
+        <object classid="clsid:067A4418-EBAC-4394-BFBE-8C533BA6503A" id="h3c_IMOS_ActiveX" events="true" height="100%"
+                width="100%">
         </object>
     </div>
 </div>
@@ -178,7 +190,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 <h5 class="modal-title" id="myModalLabel">添加预置位</h5>
             </div>
             <div class="modal-body">
@@ -198,7 +211,6 @@
 </div>
 
 <style>
-
     #vertical {
         height: 100%;
         margin: 0 auto;

@@ -20,21 +20,7 @@
     <link rel="stylesheet" href="../js/lib/jquery-ui-bootstrap/css/custom-theme/jquery-ui-1.10.3.custom.css"
           rel="stylesheet">
 
-    <!--<script src="../js/lib/require.js" data-main="../js/main" defer async="true"></script>-->
-
-    <script src="../js/lib/jquery.min.js"></script>
-
-    <script src="../js/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../js/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="../js/lib/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-
-    <!-- knodo -->
-    <!--<script src="../js/lib/kendo/js/kendo.all.min.js"></script>-->
-
-    <!-- jqGrid -->
-    <script src="../js/lib/jquery-ui-bootstrap/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="../js/lib/jquery-ui-bootstrap/jqGrid/js/i18n/grid.locale-cn.js"></script>
-    <script src="../js/lib/jquery-ui-bootstrap/jqGrid/js/jquery.jqGrid.min.js"></script>
+    <script src="../js/lib/require.js" data-main="../js/main-vehicleQuery" defer async="true"></script>
 
     <style>
         #div_query .form-inline {
@@ -48,9 +34,9 @@
 </head>
 <body>
 
-<div id="div_query">
+<div id="div_query" style="margin-bottom: 10px;">
     <div class="form-inline">
-        <div style="margin-right: 30px;" class="form-group">
+        <div style="margin-right: 30px;" class="form-group has-error">
             <label style="width: 70px;">拍摄地点</label>
             <input style="width: 200px;" type="text" class="form-control" id="tollgateCode" placeholder="">
         </div>
@@ -202,141 +188,5 @@
 <div id="jqGridPager"></div>
 
 
-<script type="text/javascript">
-    var tollgateCode = null;  //卡口编号
-    var direction = null;      //行驶方向
-    var plateCode = null;       //车牌号码
-    var laneNo = null;          //车道号
-    var plateColor = null;     //车牌颜色
-    var plateType = null;      //车牌类型
-    var vehColor = null;        //车辆颜色
-    var vehType = null;         //车辆类型
-    var starttime = null;      //开始时间
-    var endtime = null;        //结束时间
-
-    $('.form_datetime').datetimepicker({
-        language: 'zh-CN',
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        showMeridian: 1,
-        pickerPosition: "bottom-left"
-    });
-
-    $("#btn_query").click(function () {
-        tollgate_code = $("#tollgateCode").val();
-        direction = $("#direction").val();
-        plateCode = $("#plateCode").val();
-        laneNo = $("#laneNo").val();
-        plateColor = $("#plateColor").val();
-        plateType = $("#plateType").val();
-        vehColor = $("#vehColor").val();
-        vehType = $("#vehType").val();
-        starttime = $("#starttime").val();
-        endtime = $("#endtime").val();
-
-        $("#jqGrid").jqGrid('setGridParam', {
-            datatype: 'json',
-            postData: {
-                tollgateCode: tollgateCode,
-                direction: direction,
-                plateCode: plateCode,
-                laneNo: laneNo,
-                plateColor: plateColor,
-                plateType: plateType,
-                vehColor: vehColor,
-                vehType: vehType,
-                starttime: starttime,
-                endtime: endtime
-            }, //发送数据
-            page: 1
-        }).trigger("reloadGrid"); //重新载入
-    });
-
-    $(document).ready(function () {
-
-        $('.form_datetime').datetimepicker({
-            language: 'zh-CN',
-//            weekStart : 1,
-//            todayBtn : 1,
-//            autoclose : 1,
-//            todayHighlight : 1,
-//            startView : 2,
-//            forceParse : 0,
-//            showMeridian : 1,
-            pickerPosition: 'bottom-left'
-        });
-
-        $("#jqGrid").jqGrid({
-            url: "http://10.100.8.107:8081/ItsWeb/videoCtrl/getVehiclePassList.do",
-            postData: {
-                tollgateCode: tollgateCode,
-                direction: direction,
-                plateCode: plateCode,
-                laneNo: laneNo,
-                plateColor: plateColor,
-                plateType: plateType,
-                vehColor: vehColor,
-                vehType: vehType,
-                starttime: starttime,
-                endtime: endtime
-            },
-            datatype: "json",
-            mtype: 'POST',
-            colNames: ['车牌缩略图', '车牌号码', '车牌颜色', '车辆颜色', '车辆类型', '过车速度', '行驶方向', '通过时间', '车道编号', '卡口名称'],
-            colModel: [
-                {name: 'platePicUrl', index: 'platePicUrl', sortable: false, width: 200},
-                {name: 'plateCode', index: 'plateCode', width: 50},
-                {name: 'plateColor', index: 'plateColor', width: 50},
-                {name: 'vehColor', index: 'vehColor', width: 50},
-                {name: 'vehType', index: 'vehType', width: 50},
-                {name: 'speed', index: 'speed', width: 50, sorttype: "int"},
-                {name: 'direction', index: 'direction', width: 50},
-                {name: 'passTime', index: 'passTime', width: 120, sorttype: "date"},
-                {name: 'laneNo', index: 'laneNo', width: 50, sorttype: "int"},
-                {name: 'tollgateName', index: 'tollgateName', width: 120},
-            ],
-            height: 400,
-            rowNum: 10,
-//            rowList: [10,20,30],
-            pager: "#jqGridPager",
-            viewrecords: true,
-//            caption: "Sample jqGrid Table",
-            hidegrid: false,
-            altRows: true,
-            prmNames: {
-                page: "page", // 表示请求页码的参数名称
-                rows: "rows", // 表示请求行数的参数名称
-                order: "sord", // 表示采用的排序方式的参数名称
-                nd: "nd", // 表示已经发送请求的次数的参数名称
-                totalrows: "totalrows" // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
-            },
-            jsonReader: {// 读取后端json数据的格式
-                root: "rows", // 保存详细记录的名称
-                total: "total", // 总共有页
-                page: "page", // 当前是哪一页
-                records: "records", // 总共记录数
-                repeatitems: false
-            },
-            gridComplete: function () {
-                var totalWidth = $(window).width();
-                $("#jqGrid").setGridWidth(totalWidth - 3);
-            },
-            loadComplete: function () { //如果数据不存在，提示信息
-                var rowNum = $("#jqGrid").jqGrid('getGridParam', 'records');  //获取当前jqGrid的总记录数
-                if (rowNum == 0 && ($("#norecords").html() == null)) {  //如果无记录，则显示提示信息
-                    $("#jqGrid").parent().append("</pre><div id='norecords'>没有查询记录！</div><pre>");
-                    $("#norecords").show();
-                }
-                else {   //如果存在记录，则隐藏提示信息。
-                    $("#norecords").hide();
-                }
-            }
-        });
-    });
-</script>
 </body>
 </html>

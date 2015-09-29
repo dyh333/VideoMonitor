@@ -3,7 +3,7 @@
  */
 define(['jquery', 'kendo'], function ($, kendo) {
     function loadVideoList(){
-        var serviceUrl = "//10.100.13.206:8081/ItsWeb/videoCtrl/getAllVideoDevices.do";
+        var serviceUrl = "http://10.100.8.107:8081/ItsWeb/videoCtrl/getAllVideoDevices.do";
         homogeneous = new kendo.data.HierarchicalDataSource({
             transport: {
                 read: {
@@ -27,7 +27,10 @@ define(['jquery', 'kendo'], function ($, kendo) {
         });
 
         function onSelect(e) {
-            alert("Selecting: " + this.text(e.node));
+            var dataItem = this.dataItem(e.node);
+            var cameraId = dataItem.id;
+
+            //TODO：事件传递到videoControl
         }
     }
 

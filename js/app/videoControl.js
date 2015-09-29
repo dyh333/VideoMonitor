@@ -1,34 +1,98 @@
 /**
  * Created by dingyh on 2015/09/15.
  */
-define(['jquery', 'bootstrap'], function ($, bootstrap) {
-    var g_imosActivePlayer = null;
+define(['jquery', 'url', 'xml2json', 'bootstrap', 'imosActives'], function ($, url, xml2json, bootstrap, imosActives) {
+    var serverIP = "10.100.8.170";
+    var serverPort = "8800";
+    var userName = "test";
+    var cameraId = "320594000000050048_1"; //url('?tunnel');
 
-    function initVideoCtrl() {
-        g_imosActivePlayer = document.all.h3c_IMOS_ActiveX;
+    var imosActivePlayer = null;
+    var curFrameNum = 1;
+
+
+    function initImosActive() {
+        imosActivePlayer = $("#h3c_IMOS_ActiveX")[0];
         if (!checkActivePlayer()) {
             return;
         }
 
-        var xmldoc;
-        try {
-            xmldoc = new ActiveXObject("Microsoft.XMLDOM");
-            if (!xmldoc) {
-                xmldoc = new ActiveXObject("MSXML2.DOMDocument.3.0");
-            }
-        }
-        catch (e) {
-        }
-        g_xmlActive = xmldoc;
-        if (!g_xmlActive) {
-            alert("xml解析器获取错误，将导致某些功能不可用");
+        //var xmldoc;
+        //try {
+        //    xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+        //    if (!xmldoc) {
+        //        xmldoc = new ActiveXObject("MSXML2.DOMDocument.3.0");
+        //    }
+        //}
+        //catch (e) {
+        //}
+        //xmlActive = xmldoc;
+        //if (!xmlActive) {
+        //    alert("xml解析器获取错误，将导致某些功能不可用");
+        //}
+        //else {
+        //    xmlActive.async = "false";
+        //}
+    }
+
+    function login() {
+        var user = imosActives.login(imosActivePlayer, serverIP, serverPort, userName);
+    }
+
+    /**
+     * 启动实况
+     */
+    function startPlay() {
+        var frameNum = curFrameNum++;
+        //frameNum = parseInt(frameNum, 10);
+
+        var flag = imosActivePlayer.IMOSAX_StartFrameLive(frameNum, cameraId);
+        if (0 == flag) {
+            $("#txt_camName").val(getCamera(cameraId).CameraName[0]._text);
+            addPresetList(cameraId);
         }
         else {
-            g_xmlActive.async = "false";
+            alert("播放实况失败，错误码：" + flag);
         }
-        //TODO：延迟执行方法，因为播放控件初始化需要时间窗口 ？？？
-        //setTimeout(DoLogin, 300);
-        //setTimeout(DoStartPlay, 400);
+    }
+
+
+    /**
+     * 查询摄像机信息
+     */
+    function getCamera(cameraId) {
+        if (!checkActivePlayer()) {
+            return;
+        }
+
+        var result = imosActivePlayer.IMOSAX_QueryCameraInfo(cameraId);
+        //var tmpXmlDoc = loadXML(retStr);
+        var camera = xml2json.parseString(result).data[0];
+        return camera;
+    }
+
+    /**
+     * 查询預置位信息
+     */
+    function addPresetList(cameraId) {
+        if (!checkActivePlayer()) {
+            return;
+        }
+
+        var result = imosActivePlayer.IMOSAX_QueryPtzPresetList(cameraId);
+        //var tmpXmlDoc = loadXML(retStr);
+        var presets = xml2json.parseString(result).PresetList[0];
+
+        $('#sel_preset')
+            .find('option')
+            .remove()
+            .end();
+        $.each(presets.item, function (key, value) {
+            $('#sel_preset')
+                .append($("<option></option>")
+                    .attr("value", value.PresetValue[0]._text)
+                    .text(value.PresetDesc[0]._text));
+        });
     }
 
     function bandingBtnCtrl() {
@@ -36,9 +100,8 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
             if (!checkActivePlayer()) {
                 return;
             }
-            //摄像机名称
-            var cameraId = document.getElementById("CamIDText").value;
-            var flag = g_imosActivePlayer.IMOSAX_LockPtzCtrl(cameraId);
+
+            var flag = imosActivePlayer.IMOSAX_LockPtzCtrl(cameraId);
             if (0 != flag) {
                 alert("锁定出错，错误码：" + flag);
             }
@@ -48,9 +111,8 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
             if (!checkActivePlayer()) {
                 return;
             }
-            //摄像机名称
-            var cameraId = document.getElementById("CamIDText").value;
-            var flag = g_imosActivePlayer.IMOSAX_UnlockPtzCtrl(cameraId);
+
+            var flag = imosActivePlayer.IMOSAX_UnlockPtzCtrl(cameraId);
             if (0 != flag) {
                 alert("解锁出错，错误码：" + flag);
             }
@@ -97,7 +159,7 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
         });
 
         $('#td_stop').click(function () {
-            stopPtz();
+            stopPtzCMD();
         });
 
         $('#td_right').click(function () {
@@ -117,19 +179,27 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
         });
 
         $('#td_presetSel').click(function () {
-            var cameraId = document.getElementById("TunnelText").value;
             var selTarget = $("#sel_preset").value();  //预置位控件对象
             var ulPresetValue = selTarget.value;  //选中值
 
-            var retStr = g_imosActivePlayer.IMOSAX_UsePtzPreset(cameraId, ulPresetValue);
+            var retStr = imosActivePlayer.IMOSAX_UsePtzPreset(cameraId, ulPresetValue);
         });
 
         $('#td_presetAdd').click(function () {
+            $("#center-pane object").hide();
+
             $("#modal_presetAdd").modal('show');
 
-            $("#btn_presetSave").click(function(){
+            $("#btn_presetSave").click(function () {
+                //TODO: 将当前摄像头位置添加到预置位列表中
 
+                $("#modal_presetAdd").modal('hide');
+                $("#center-pane object").show();
             });
+
+            $('#modal_presetAdd').on('hidden.bs.modal', function () {
+                $("#center-pane object").show();
+            })
         });
 
         $('#td_presetDel').click(function () {
@@ -137,14 +207,14 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
             var selTarget = document.getElementById("preset");  //预置位控件对象
             var ulPresetValue = selTarget.value;  //选中值
 
-            var retStr = g_imosActivePlayer.IMOSAX_DelPtzPreset(cameraId, ulPresetValue);
+            var retStr = imosActivePlayer.IMOSAX_DelPtzPreset(cameraId, ulPresetValue);
             DoSetPresetInfo(cameraId);  //TODO: 设置云台控制面板中  预置位信息???
             alert("删除云台预置位信息: " + retStr);
         });
     }
 
     function checkActivePlayer() {
-        if (!g_imosActivePlayer) {
+        if (!imosActivePlayer) {
             alert("未安装控件，请先安装后再使用本页面");
             return false;
         } else {
@@ -156,11 +226,10 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
         if (!checkActivePlayer()) {
             return;
         }
-        //摄像机名称
-        var cameraId = document.getElementById("CamIDText").value;
-        var PtzCmd = parseInt(ptzCmdStr, 16);
-        //var ptzSpeed = 2;
-        var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+
+        var ptzSpeed = parseInt($("#ptzSpeed").find("option:selected").text());
+        var PtzCmd = parseInt(ptzCmd, 16);
+        var flag = imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
         if (0 != flag) {
             alert("云台控制出错，错误码：" + flag);
         }
@@ -170,20 +239,20 @@ define(['jquery', 'bootstrap'], function ($, bootstrap) {
         if (!checkActivePlayer()) {
             return;
         }
-        //摄像机名称
-        var cameraId = document.getElementById("CamIDText").value;
+
         var PtzCmd = 0x0901;
-        var ptzSpeed = 6;
-        var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+        var ptzSpeed = parseInt($("#ptzSpeed").find("option:selected").text());
+        var flag = imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
         if (0 != flag) {
             alert("云台控制出错，错误码：" + flag);
         }
     }
 
 
-
     return {
-        initVideoCtrl: initVideoCtrl,
-        bandingBtnCtrl: bandingBtnCtrl
+        initImosActive: initImosActive,
+        bandingBtnCtrl: bandingBtnCtrl,
+        login: login,
+        startPlay: startPlay
     };
 });
