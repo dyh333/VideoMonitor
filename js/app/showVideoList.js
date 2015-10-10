@@ -1,10 +1,12 @@
 /**
  * Created by dingyh on 2015/09/15.
  */
-define(['jquery', 'kendo'], function ($, kendo) {
+define(['jquery', 'kendo', 'postal'], function ($, kendo, postal) {
+    var channel = postal.channel("VideoChannel");
+
     function loadVideoList(){
         var serviceUrl = "http://10.100.8.107:8081/ItsWeb/videoCtrl/getAllVideoDevices.do";
-        homogeneous = new kendo.data.HierarchicalDataSource({
+        var homogeneous = new kendo.data.HierarchicalDataSource({
             transport: {
                 read: {
                     url: serviceUrl,
@@ -30,7 +32,8 @@ define(['jquery', 'kendo'], function ($, kendo) {
             var dataItem = this.dataItem(e.node);
             var cameraId = dataItem.id;
 
-            //TODO：事件传递到videoControl
+            //事件传递到videoControl
+            channel.publish( "video.show", { cameraId: cameraId } );
         }
     }
 

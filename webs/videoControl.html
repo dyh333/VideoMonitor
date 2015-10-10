@@ -15,9 +15,17 @@
 
     <link rel="stylesheet" href="../css/common.css"/>
 
-    <!--<script src="../js/lib/jquery.min.js"></script>-->
-    <!--<script src="../js/lib/bootstrap/js/bootstrap.min.js"></script>-->
+    <style>
+        #vertical {
+            height: 100%;
+            margin: 0 auto;
+        }
+    </style>
 
+    <!--[if lt IE 9]>
+    <script src="../js/lib/html5shiv.min.js"></script>
+    <script src="../js/lib/respond.min.js"></script>
+    <![endif]-->
     <script src="../js/lib/require.js" data-main="../js/main-videoCtrl" defer async="true"></script>
 </head>
 <body>
@@ -30,7 +38,7 @@
                     <ol class="breadcrumb" style="margin-bottom: 0px; font-size: 8pt; border-radius: 0px !important;">
                         <li><a href="vehicleQuery.html" target='view_window'>过车查询</a></li>
                         <li><a href="illegalVehicleQuery.html" target='view_window'>违法过车</a></li>
-                        <li><a href="#" target='view_window'>车辆布控</a></li>
+                        <li><a href="vehicleDisposition.html" target='view_window'>车辆布控</a></li>
                         <li><a href="#" target='view_window'>布控告警</a></li>
                     </ol>
                 </div>
@@ -210,13 +218,14 @@
     </div>
 </div>
 
-<style>
-    #vertical {
-        height: 100%;
-        margin: 0 auto;
-    }
+
+<!--ActiveX控件事件, 初始化完成后会触发, 告知界面当前的播放器ID-->
+<!--<script type="text/javascript" for= "h3c_IMOS_ActiveX" event="eventClickFrame(ulFrameNum,  pcFrameInfo)">-->
+    <!--alert(ulFrameNum);-->
+    <!--alert(pcFrameInfo);-->
+<!--</script>-->
 
 
-</style>
+
 </body>
 </html>

@@ -5,10 +5,14 @@ require.config({
     baseUrl: '../js',
     paths: {
         "jquery": "lib/jquery.min",
+        "html5shiv": "lib/html5shiv.min",
+        "respond": "lib/respond.min",
         "url": "lib/js-url/url.min",
         "xml2json": "lib/xml2json/xmlToJSON",
         "bootstrap": "lib/bootstrap/js/bootstrap.min",
         "kendo": "lib/kendo/js/kendo.all.min",
+        "lodash": "lib/postal/lodash.min",
+        "postal": "lib/postal/postal.min",
 
         "showVideoList": "app/showVideoList",
         "imosActives": "app/imosActives",
@@ -16,7 +20,8 @@ require.config({
     },
     shim: {
         "url": ['jquery'],
-        "bootstrap": ['jquery']
+        "bootstrap": ['jquery'],
+        "postal": ['lodash']
     }
 });
 
@@ -24,7 +29,7 @@ require.config({
 require(['showVideoList', 'videoCtrl'], function (showVideoList, videoCtrl) {
     $("#horizontal").kendoSplitter({
         panes: [
-            {collapsible: true, size: "260px"},
+            {collapsible: true, size: "270px"},
             {collapsible: false}
         ]
     });
@@ -37,6 +42,9 @@ require(['showVideoList', 'videoCtrl'], function (showVideoList, videoCtrl) {
             {collapsible: true, resizable: false, size: "210px"}
         ]
     });
+
+
+
 
     videoCtrl.initImosActive();
 
